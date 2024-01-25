@@ -1,6 +1,6 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'package:flutter/material.dart';
-import 'package:flutter_08_project/counter/counter_controller.dart';
+import 'package:flutter_08_project/feature/counter/counter_controller.dart';
 import 'package:get/instance_manager.dart';
 import 'package:get/state_manager.dart';
 

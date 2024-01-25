@@ -1,8 +1,8 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'package:flutter/material.dart';
-import 'package:flutter_08_project/login/login_controller.dart';
-import 'package:flutter_08_project/login/login_view.dart';
-import 'package:get/instance_manager.dart';
+import 'package:flutter_08_project/feature/login/login_binding.dart';
+import 'package:flutter_08_project/feature/login/login_view.dart';
+import 'package:flutter_08_project/router/router.dart';
 import 'package:get/route_manager.dart';
 
 void main() {
@@ -16,11 +16,13 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return GetMaterialApp(
       title: 'Flutter Demo',
+      initialBinding: LoginBinding(),
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         useMaterial3: true,
       ),
-      home: const MyHomePage(title: 'Flutter Demo Home Page'),
+      getPages: AppRouter.routes,
+      home: const LoginPage(title: 'Flutter Demo Home Page'),
     );
   }
 }
