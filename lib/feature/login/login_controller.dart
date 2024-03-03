@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_08_project/feature/home/home_arguments.dart';
-import 'package:flutter_08_project/models/login_response.dart';
-import 'package:flutter_08_project/network/apis/login_apis.dart';
+import 'package:flutter_08_project/models/login_request.dart';
+import 'package:flutter_08_project/network/configs/data_state.dart';
+import 'package:flutter_08_project/network/repositories/login_repository.dart';
 import 'package:flutter_08_project/router/router.dart';
 import 'package:get/get.dart';
 
@@ -10,6 +11,7 @@ class LoginController extends GetxController {
   final TextEditingController passwordController = TextEditingController();
   final formKey = GlobalKey<FormState>();
   final showPassword = false.obs;
+  final isLoading = false.obs;
 
   void showHidePassword() {
     showPassword.value = !showPassword.value;
@@ -47,47 +49,18 @@ class LoginController extends GetxController {
     }
   }
 
-  // void onSubmit() {
-  //   if ((user1.text != 'nguyendao') || (user2.text != '123456')) {
-  //     Get.dialog(
-  //       Dialog(
-  //         child: Padding(
-  //           padding: const EdgeInsets.all(8),
-  //           child: Column(
-  //             mainAxisSize: MainAxisSize.min,
-  //             mainAxisAlignment: MainAxisAlignment.center,
-  //             children: [
-  //               const Text(
-  //                 'Thông tin đăng nhập không đúng, vui lòng nhập lại',
-  //                 textAlign: TextAlign.center,
-  //               ),
-  //               const SizedBox(
-  //                 height: 15,
-  //               ),
-  //               TextButton(
-  //                 onPressed: () {
-  //                   // Navigator.pop(context);
-  //                 },
-  //                 child: const Text('Close'),
-  //               ),
-  //             ],
-  //           ),
-  //         ),
-  //       ),
-  //     );
-  //   }
-  //   if ((user1.text == 'nguyendao') && (user2.text == '123456')) {
-  //     // Navigator.push(
-  //     //     context, MaterialPageRoute(builder: (context) => const Sceen3()));
-  //   }
-  // }
-
   onSubmitLogin() async {
-    final LoginResponseModel? response = await LoginApi().login(
-      email: emailController.text,
-      password: passwordController.text,
+    final emailValue = emailController.text;
+    final passwordValue = passwordController.text;
+
+    final LoginRequest loginRequest = LoginRequest(
+      email: emailValue,
+      password: passwordValue,
     );
-    if (response != null) {
+    isLoading.value = true;
+    final loginReponseFromRepo = await LoginRepository().login(loginRequest);
+    isLoading.value = false;
+    if (loginReponseFromRepo is DataSuccess) {
       Get.toNamed(
         AppRouterNamed.homepage,
         arguments: HomeArguments(
@@ -95,33 +68,38 @@ class LoginController extends GetxController {
           password: passwordController.text,
         ),
       );
-    } else {
-      Get.dialog(
-        Dialog(
-          child: Padding(
-            padding: const EdgeInsets.all(8),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                const Text(
-                  'Thông tin đăng nhập không đúng, vui lòng nhập lại',
-                  textAlign: TextAlign.center,
-                ),
-                const SizedBox(
-                  height: 15,
-                ),
-                TextButton(
-                  onPressed: () {
-                    Get.back();
-                  },
-                  child: const Text('Close'),
-                ),
-              ],
-            ),
+    }
+    if (loginReponseFromRepo is DataFailed) {
+      _showErrorLoginDialog();
+    }
+  }
+
+  Future<dynamic> _showErrorLoginDialog() {
+    return Get.dialog(
+      Dialog(
+        child: Padding(
+          padding: const EdgeInsets.all(8),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              const Text(
+                'Đã có lỗi xảy ra, vui lòng nhập lại',
+                textAlign: TextAlign.center,
+              ),
+              const SizedBox(
+                height: 15,
+              ),
+              TextButton(
+                onPressed: () {
+                  Get.back();
+                },
+                child: const Text('Đóng'),
+              ),
+            ],
           ),
         ),
-      );
-    }
+      ),
+    );
   }
 }
