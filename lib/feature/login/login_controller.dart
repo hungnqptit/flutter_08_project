@@ -22,17 +22,13 @@ class LoginController extends GetxController {
   }
 
   String? validatorUsername(username) {
-    if (!GetUtils.isUsername(username)) {
-      return "Username khong hop le";
+    if ((username ?? '').isEmpty) {
+      return 'Username không được để trống';
+    } else if ((username ?? '').contains(' ')) {
+      return 'Username không được có dấu cách';
+    } else {
+      return null;
     }
-    return null;
-    // if ((username ?? '').isEmpty) {
-    //   return 'Username không được để trống';
-    // } else if ((username ?? '').contains(' ')) {
-    //   return 'Username không được có dấu cách';
-    // } else {
-    //   return null;
-    // }
   }
 
   void onChangePassword(password) {
@@ -50,6 +46,13 @@ class LoginController extends GetxController {
   }
 
   onSubmitLogin() async {
+    return Get.toNamed(
+      AppRouterNamed.homepage,
+      arguments: HomeArguments(
+        username: emailController.text,
+        password: passwordController.text,
+      ),
+    );
     final emailValue = emailController.text;
     final passwordValue = passwordController.text;
 

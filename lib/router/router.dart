@@ -1,3 +1,4 @@
+import 'package:flutter_08_project/feature/home/home_binding.dart';
 import 'package:flutter_08_project/feature/login/login_binding.dart';
 import 'package:flutter_08_project/feature/login/login_view.dart';
 import 'package:flutter_08_project/feature/home/home_view.dart';
@@ -22,6 +23,7 @@ class AppRouter {
     GetPage(
       name: AppRouterNamed.homepage,
       page: () => const HomePage(),
+      binding: HomeBinding(),
     ),
   ];
 }

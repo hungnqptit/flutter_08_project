@@ -6,6 +6,7 @@ import 'package:flutter_08_project/network/configs/data_state.dart';
 class LoginRepository {
   Future<DataState<LoginResponseModel?>> login(LoginRequest request) async {
     final responseFromApi = await LoginApi().login(request);
+
     if (responseFromApi != null) {
       return DataSuccess(data: responseFromApi);
     } else {
